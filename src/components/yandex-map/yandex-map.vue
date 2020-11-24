@@ -90,7 +90,6 @@ export default {
           mapStateAutoApply: true,
         },
       ).then((route) => {
-        console.log(route);
         routesCollection.add(route);
         this.ymapsInstance.geoObjects.add(routesCollection);
       });
