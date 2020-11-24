@@ -61,14 +61,15 @@ export default {
     }),
     async initMapHandler(map) {
       await loadYmap();
+      this.loadYmaps(window.ymaps);
+      this.loadYmapsInstance(map);
+
       const polygonGeometry = new this.ymaps.geometry.Polygon([
         mkadCoords,
       ]);
       const polygonGeoObject = new this.ymaps.GeoObject({ geometry: polygonGeometry });
       map.geoObjects.add(polygonGeoObject);
 
-      this.loadYmaps(window.ymaps);
-      this.loadYmapsInstance(map);
       this.loadMkadPolygon(polygonGeoObject);
     },
     async getInfoAboutCoords(e) {

@@ -1,7 +1,8 @@
 import { SET_YMAPS, SET_YMAPS_INSTANCE, SET_MKAD_POLYGON } from '@/store/maps/mutations';
 import { LOAD_YMAPS, LOAD_YMAPS_INSTANCE, LOAD_MKAD_POLYGON } from '@/store/maps/actions';
 
-const maps = {
+/* eslint-disable import/prefer-default-export */
+export const maps = {
   actions: {
     [LOAD_YMAPS](context, ymaps) {
       context.commit(SET_YMAPS, ymaps);
@@ -31,5 +32,3 @@ const maps = {
     polygon: null,
   }),
 };
-
-module.exports = { maps };
