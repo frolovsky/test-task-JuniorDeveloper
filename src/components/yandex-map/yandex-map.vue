@@ -81,6 +81,8 @@ export default {
       const adress = data.response.GeoObjectCollection
         .featureMember[0].GeoObject
         .metaDataProperty.GeocoderMetaData.text;
+
+      console.log(`Адрес новой метки: ${adress}`);
       const i = this.polygon.geometry.getClosest(coords).closestPointIndex;
       this.showMarker(coords, adress);
       const routesCollection = new this.ymaps.GeoObjectCollection();
@@ -91,9 +93,21 @@ export default {
           mapStateAutoApply: true,
         },
       ).then((route) => {
+        console.log(`Длина маршрута: ${Math.floor(route.getLength())} метров`);
         routesCollection.add(route);
         this.ymapsInstance.geoObjects.add(routesCollection);
       });
+      const polyline = new this.ymaps.Polyline([
+        coords, mkadCoords[i],
+      ], {}, {
+        draggable: false,
+        strokeColor: '#000000',
+        strokeWidth: 3,
+        strokeStyle: '1 5',
+      });
+
+      this.ymapsInstance.geoObjects.add(polyline);
+      this.ymapsInstance.setBounds(polyline.geometry.getBounds());
     },
     showMarker(coords, hint) {
       this.marker.hidden = false;
