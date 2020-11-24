@@ -1,4 +1,8 @@
-# task1
+# Task for sknebo
+# Pos: Junior Frontend Developer
+```
+original repository: https://github.com/frolovsky/sknebo-test
+```
 
 ## Project setup
 ```
