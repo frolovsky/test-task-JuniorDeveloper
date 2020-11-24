@@ -275,14 +275,4 @@ const mkadCoords = [
   [55.897702887224796, 37.67240905761718],
 ];
 
-const getNearestPoint = (arr, coords) => {
-  const distances = arr.map(c => {
-    const dx = c[0] - coords[0];
-    const dy = c[1] - coords[1];
-    return Math.sqrt(dx * dx + dy * dy);
-  })
-  const indexOfNearest = distances.indexOf(Math.min(...distances));
-  return arr[indexOfNearest];
-}
-
-module.exports = { mkadCoords, getNearestPoint }
+module.exports = { mkadCoords };

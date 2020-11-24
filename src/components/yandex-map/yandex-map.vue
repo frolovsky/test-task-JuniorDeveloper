@@ -7,12 +7,6 @@
     @map-was-initialized="initMapHandler"
     @click="getInfoAboutCoords"
   >
-    <ymap-marker 
-      :coords="polygon.coords"
-      :marker-id="polygon.id"
-      :marker-fill="polygon.fill"
-      marker-type="polygon"
-    />
     <ymap-marker
       v-if="!marker.hidden"
       :coords="marker.coords"
@@ -28,8 +22,8 @@
 <script>
 import { yandexMap, ymapMarker, loadYmap } from 'vue-yandex-maps';
 import { mapActions, mapState } from 'vuex';
-import { LOAD_YMAPS, LOAD_YMAPS_INSTANCE } from '@/store/maps/actions';
-import { mkadCoords, getNearestPoint } from '@/common/helpers/coords';
+import { LOAD_YMAPS, LOAD_YMAPS_INSTANCE, LOAD_MKAD_POLYGON } from '@/store/maps/actions';
+import { mkadCoords } from '@/common/helpers/coords';
 import axios from 'axios';
 
 export default {
@@ -51,36 +45,31 @@ export default {
       id: 1,
       hint: '',
     },
-    polygon: {
-      coords: [mkadCoords],
-      id: 2,
-      fill: {
-        enabled: true,
-        color: '#69A2FF',
-        opacity: .3
-      },
-      stroke: {
-        color: '#69A2FF',
-        opacity: 1, 
-        width: 2, 
-      }
-    }
   }),
   computed: {
     ...mapState('maps', {
       ymaps: (state) => state.ymaps,
-      ymapsInstance: (state) => state.ymapsInstance
-    })
+      ymapsInstance: (state) => state.ymapsInstance,
+      polygon: (state) => state.polygon,
+    }),
   },
   methods: {
     ...mapActions('maps', {
       loadYmaps: LOAD_YMAPS,
       loadYmapsInstance: LOAD_YMAPS_INSTANCE,
+      loadMkadPolygon: LOAD_MKAD_POLYGON,
     }),
     async initMapHandler(map) {
       await loadYmap();
+      const polygonGeometry = new this.ymaps.geometry.Polygon([
+        mkadCoords,
+      ]);
+      const polygonGeoObject = new this.ymaps.GeoObject({ geometry: polygonGeometry });
+      map.geoObjects.add(polygonGeoObject);
+
       this.loadYmaps(window.ymaps);
       this.loadYmapsInstance(map);
+      this.loadMkadPolygon(polygonGeoObject);
     },
     async getInfoAboutCoords(e) {
       const coords = e.get('coords');
@@ -91,18 +80,17 @@ export default {
       const adress = data.response.GeoObjectCollection
         .featureMember[0].GeoObject
         .metaDataProperty.GeocoderMetaData.text;
-
+      const i = this.polygon.geometry.getClosest(coords).closestPointIndex;
       this.showMarker(coords, adress);
-
       const routesCollection = new this.ymaps.GeoObjectCollection();
       this.ymaps.route(
         [
-          coords, getNearestPoint(mkadCoords, coords)
+          coords, mkadCoords[i],
         ], {
-          mapStateAutoApply: true
-        }
-      ).then( route => {
-        console.log(this.ymapsInstance.geoObjects)
+          mapStateAutoApply: true,
+        },
+      ).then((route) => {
+        console.log(route);
         routesCollection.add(route);
         this.ymapsInstance.geoObjects.add(routesCollection);
       });
