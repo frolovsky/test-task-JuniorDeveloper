@@ -1,6 +1,6 @@
 # Task for sknebo
-# Pos: Junior Frontend Developer
-# Author: Frolovsky Alexey
+### Pos: Junior Frontend Developer
+### Author: Frolovsky Alexey
 
 1 задача - (easy) реализована полностью.
 2 задача - (medium) реализована полностью (данные выводятся в консоль).
