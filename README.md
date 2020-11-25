@@ -1,10 +1,8 @@
 # Task for sknebo
 # Pos: Junior Frontend Developer
-```
-original repository: https://github.com/frolovsky/sknebo-test
-```
+# Author: Frolovsky Alexey
 
-1 задача (easy level) реализована полностью (адрес при наведении или при клике на поставленную метку)
+1 задача (easy level) реализована полностью.
 2 и 3 задача, выполнены частчно. Как доделать до конца понимаю, но не уверен что завтра (25.11.20) успею.
 ## Project setup
 ```
