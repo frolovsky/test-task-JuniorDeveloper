@@ -22,7 +22,13 @@
 <script>
 import { yandexMap, ymapMarker, loadYmap } from 'vue-yandex-maps';
 import { mapActions, mapState } from 'vuex';
-import { LOAD_YMAPS, LOAD_YMAPS_INSTANCE, LOAD_MKAD_POLYGON } from '@/store/maps/actions';
+import {
+  LOAD_YMAPS,
+  LOAD_YMAPS_INSTANCE,
+  LOAD_MKAD_POLYGON,
+  LOAD_PREV_ROUTE,
+  LOAD_PREV_LINE,
+} from '@/store/maps/actions';
 import { mkadCoords } from '@/common/helpers/coords';
 import axios from 'axios';
 
@@ -51,6 +57,8 @@ export default {
       ymaps: (state) => state.ymaps,
       ymapsInstance: (state) => state.ymapsInstance,
       polygon: (state) => state.polygon,
+      prevRoute: (state) => state.prevRoute,
+      prevLine: (state) => state.prevLine,
     }),
   },
   methods: {
@@ -58,6 +66,8 @@ export default {
       loadYmaps: LOAD_YMAPS,
       loadYmapsInstance: LOAD_YMAPS_INSTANCE,
       loadMkadPolygon: LOAD_MKAD_POLYGON,
+      loadPrevRoute: LOAD_PREV_ROUTE,
+      loadPrevLine: LOAD_PREV_LINE,
     }),
     async initMapHandler(map) {
       await loadYmap();
@@ -83,22 +93,26 @@ export default {
         .metaDataProperty.GeocoderMetaData.text;
 
       console.log(`Адрес новой метки: ${adress}`);
-      const i = this.polygon.geometry.getClosest(coords).closestPointIndex;
       this.showMarker(coords, adress);
-      const routesCollection = new this.ymaps.GeoObjectCollection();
+      this.createRoute(coords);
+    },
+    createRoute(coords) {
+      const indexClosestPoint = this.polygon.geometry.getClosest(coords).closestPointIndex;
       this.ymaps.route(
         [
-          coords, mkadCoords[i],
+          coords, mkadCoords[indexClosestPoint],
         ], {
           mapStateAutoApply: true,
         },
       ).then((route) => {
+        this.ymapsInstance.geoObjects.remove(this.prevRoute);
         console.log(`Длина маршрута: ${Math.floor(route.getLength())} метров`);
-        routesCollection.add(route);
-        this.ymapsInstance.geoObjects.add(routesCollection);
+        this.ymapsInstance.geoObjects.add(route);
+        this.loadPrevRoute(route);
       });
+
       const polyline = new this.ymaps.Polyline([
-        coords, mkadCoords[i],
+        coords, mkadCoords[indexClosestPoint],
       ], {}, {
         draggable: false,
         strokeColor: '#000000',
@@ -106,6 +120,8 @@ export default {
         strokeStyle: '1 5',
       });
 
+      this.ymapsInstance.geoObjects.remove(this.prevLine);
+      this.loadPrevLine(polyline);
       this.ymapsInstance.geoObjects.add(polyline);
       this.ymapsInstance.setBounds(polyline.geometry.getBounds());
     },
