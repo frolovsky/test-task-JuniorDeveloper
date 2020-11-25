@@ -2,26 +2,32 @@
 # Pos: Junior Frontend Developer
 # Author: Frolovsky Alexey
 
-1 задача (easy level) реализована полностью.
-2 и 3 задача, выполнены частчно. Как доделать до конца понимаю, но не уверен что завтра (25.11.20) успею.
+1 задача - (easy) реализована полностью.
+2 задача - (medium) реализована полностью (данные выводятся в консоль).
+3 задача - (hardcore) реализована частично. Использую Vuex(не пока немного не для того)).
 ## Project setup
 ```
-yarn install
+npm install
 ```
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+npm run serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+npm run build
 ```
 
 ### Lints and fixes files
 ```
-yarn lint
+npm run lint
+```
+
+### Previous repository with this task 
+```
+https://github.com/frolovsky/sknebo-test
 ```
 
 ### Customize configuration
